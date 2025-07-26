@@ -1,0 +1,72 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: notification-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bankhub
+    username: bankhub
+    password: bankhub123
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: notification-service
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: demo@bankhub.com
+    password: demo-password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          timeout: 5000
+          connection-timeout: 5000
+          write-timeout: 5000
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+# Notification Configuration
+notification:
+  email:
+    from: "noreply@bankhub-demo.com"
+    enabled: true
+  sms:
+    enabled: false
+    provider: "twilio"
+  template:
+    transaction-alert: "Transaction Alert: ${amount} transferred from ${fromAccount} to ${toAccount}"
+    fraud-alert: "FRAUD ALERT: Suspicious transaction detected. Amount: ${amount}. Risk Score: ${riskScore}"
+    balance-update: "Account Balance Update: Your account ${accountNumber} balance is now ${balance}"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics

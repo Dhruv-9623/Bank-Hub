@@ -1,0 +1,244 @@
+### Test User Registration
+POST http://localhost:8080/api/users/register
+Content-Type: application/json
+
+{
+  "username": "john_doe",
+  "email": "john@example.com",
+  "password": "password123",
+  "firstName": "John",
+  "lastName": "Doe"
+}
+
+### Test User Login
+POST http://localhost:8080/api/users/login
+Content-Type: application/json
+
+{
+  "username": "john_doe",
+  "password": "password123"
+}
+
+### Create a Checking Account
+POST http://localhost:8080/api/accounts
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "accountType": "CHECKING",
+  "initialDeposit": 1000.00
+}
+
+### Create a Savings Account
+POST http://localhost:8080/api/accounts
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "accountType": "SAVINGS",
+  "initialDeposit": 5000.00
+}
+
+### Get All Accounts for User 1
+GET http://localhost:8080/api/accounts/user/1
+
+### Deposit Money (Replace ACC1234567890 with actual account number from create response)
+POST http://localhost:8080/api/accounts/ACC0048185412/deposit
+Content-Type: application/json
+
+{
+  "amount": 250.00,
+  "description": "Salary deposit"
+}
+
+### Withdraw Money
+POST http://localhost:8080/api/accounts/ACC0175145040/withdraw
+Content-Type: application/json
+
+{
+  "amount": 100.00,
+  "description": "ATM withdrawal"
+}
+
+### TEST MONEY TRANSFER - Checking to Savings
+POST http://localhost:8080/api/transactions/transfer
+Content-Type: application/json
+
+{
+  "fromAccount": "ACC0048185412",
+  "toAccount": "ACC0175145040",
+  "amount": 300.00,
+  "description": "Transfer from checking to savings",
+  "userId": 1
+}
+
+### TEST MONEY TRANSFER - Savings to Checking
+POST http://localhost:8080/api/transactions/transfer
+Content-Type: application/json
+
+{
+  "fromAccount": "ACC0175145040",
+  "toAccount": "ACC0048185412",
+  "amount": 150.00,
+  "description": "Transfer from savings to checking",
+  "userId": 1
+}
+
+### Get Updated Account Balances
+GET http://localhost:8080/api/accounts/user/1
+
+### Get Complete Transaction History
+GET http://localhost:8080/api/transactions/user/1
+
+### Get Transactions for Checking Account
+GET http://localhost:8080/api/transactions/account/ACC0048185412
+
+### Get Transactions for Savings Account
+GET http://localhost:8080/api/transactions/account/ACC0175145040
+
+### Test AI Fraud Detection
+POST http://localhost:8080/api/fraud/analyze
+Content-Type: application/json
+
+{
+  "transactionId": "TXN123456789",
+  "userId": 1,
+  "fromAccount": "ACC0048185412",
+  "toAccount": "ACC0175145040",
+  "amount": 15000.00,
+  "transactionType": "TRANSFER",
+  "description": "Large suspicious transfer",
+  "timestamp": "2025-07-26T22:30:00",
+  "ipAddress": "192.168.1.100",
+  "deviceId": "DEVICE123",
+  "location": "Unknown"
+}
+
+
+### Test HIGHLY SUSPICIOUS Transaction (Should get HIGH/CRITICAL risk)
+POST http://localhost:8080/api/fraud/analyze
+Content-Type: application/json
+
+{
+  "transactionId": "TXN999888777",
+  "userId": 1,
+  "fromAccount": "ACC0048185412",
+  "toAccount": "ACC0175145040",
+  "amount": 20000.00,
+  "transactionType": "TRANSFER",
+  "description": "Emergency transfer",
+  "timestamp": "2025-07-26T03:00:00",
+  "ipAddress": "192.168.1.100",
+  "deviceId": "DEVICE123",
+  "location": "Unknown"
+}
+
+### Test NORMAL Transaction (Should get LOW risk)
+POST http://localhost:8080/api/fraud/analyze
+Content-Type: application/json
+
+{
+  "transactionId": "TXN555444333",
+  "userId": 1,
+  "fromAccount": "ACC0048185412",
+  "toAccount": "ACC0175145040",
+  "amount": 150.00,
+  "transactionType": "TRANSFER",
+  "description": "Regular payment",
+  "timestamp": "2025-07-26T15:00:00",
+  "ipAddress": "192.168.1.100",
+  "deviceId": "DEVICE123",
+  "location": "Toronto"
+}
+
+### Get Fraud Statistics
+GET http://localhost:8080/api/fraud/stats
+
+### Get User Fraud History
+GET http://localhost:8080/api/fraud/user/1
+
+### Test Notification Service
+GET http://localhost:8085/api/notifications/test
+
+### Test Manual Email Notification - Transaction Alert
+POST http://localhost:8080/api/notifications/send
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "recipientEmail": "user1@bankhub-demo.com",
+  "notificationType": "TRANSACTION_ALERT",
+  "channel": "EMAIL",
+  "subject": "🏦 BankHub Transaction Alert",
+  "message": "Dear Customer, a transaction of $500.00 has been processed on your checking account. If you did not authorize this transaction, please contact us immediately.",
+  "sourceEvent": "manual-test",
+  "eventData": "{\"amount\": 500.00, \"account\": \"checking\"}"
+}
+
+### Test Manual Email Notification - Fraud Alert
+POST http://localhost:8080/api/notifications/send
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "recipientEmail": "user1@bankhub-demo.com",
+  "notificationType": "FRAUD_ALERT",
+  "channel": "EMAIL",
+  "subject": "🚨 FRAUD ALERT - Immediate Action Required",
+  "message": "URGENT: Suspicious activity detected on your account. A transaction of $10,000 was blocked due to high risk indicators. Please verify your account security immediately.",
+  "sourceEvent": "manual-fraud-test",
+  "eventData": "{\"riskScore\": 95, \"blocked\": true}"
+}
+
+### Test Manual SMS Notification
+POST http://localhost:8080/api/notifications/send
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "recipientPhone": "+1-555-0101",
+  "notificationType": "FRAUD_ALERT",
+  "channel": "SMS",
+  "subject": "Fraud Alert SMS",
+  "message": "BANKHUB ALERT: Suspicious activity detected. Call 1-800-BANKHUB if not authorized.",
+  "sourceEvent": "manual-sms-test",
+  "eventData": "{\"urgent\": true}"
+}
+
+### Get Notification Statistics
+GET http://localhost:8080/api/notifications/stats
+
+### Get User Notifications History
+GET http://localhost:8080/api/notifications/user/1
+
+### 🎯 THE ULTIMATE TEST - Transaction with Auto-Notification!
+POST http://localhost:8082/api/transactions/transfer
+Content-Type: application/json
+
+{
+  "fromAccount": "ACC0048185412",
+  "toAccount": "ACC0175145040",
+  "amount": 1000.00,
+  "description": "Transfer with automatic notification system test",
+  "userId": 1
+}
+
+### Create First Test Account
+POST http://localhost:8080/api/accounts/create
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "accountType": "CHECKING",
+  "initialDeposit": 5000.00
+}
+
+### Create Second Test Account
+POST http://localhost:8080/api/accounts/create
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "accountType": "SAVINGS",
+  "initialDeposit": 3000.00
+}
