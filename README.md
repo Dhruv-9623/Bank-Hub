@@ -9,7 +9,7 @@
 ## 🚀 **Quick Start**
 
 ### **Prerequisites**
-- Java 17+
+- Java 21+
 - Docker & Docker Compose
 - Maven 3.6+
 
@@ -64,7 +64,7 @@ User Service: http://localhost:8081
 🛠️ Technology Stack
 Backend
 
-Java 17 - Latest LTS version
+Java 21 - Latest LTS version
 Spring Boot 3.1.5 - Microservices framework
 Spring Cloud 2022.0.4 - Distributed systems toolkit
 Spring Security - Authentication & authorization
@@ -122,4 +122,5 @@ This project is licensed under the MIT License.
   <h3>⭐ If this project helped you, please give it a star! ⭐</h3>
   <p><strong>Built with ❤️ for the developer community</strong></p>
 </div>
+
 ```
