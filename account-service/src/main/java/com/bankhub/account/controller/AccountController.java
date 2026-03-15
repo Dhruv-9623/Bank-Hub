@@ -3,8 +3,6 @@ package com.bankhub.account.controller;
 import com.bankhub.account.dto.*;
 import com.bankhub.account.service.AccountService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -15,20 +13,21 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/accounts")
 @Validated
-@RequiredArgsConstructor
-@Slf4j
 @CrossOrigin(origins = "*")
 public class AccountController {
 
     private final AccountService accountService;
+
+    public AccountController(AccountService accountService) {
+        this.accountService = accountService;
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AccountResponseDto> createAccount(
             @Valid @RequestBody AccountCreateDto createDto) {
 
-        log.info("Account creation request for user: {}, type: {}",
-                createDto.getUserId(), createDto.getAccountType());
+        System.out.println("Account creation request for user: " + createDto.getUserId() + ", type: " + createDto.getAccountType());
 
         AccountResponseDto account = accountService.createAccount(createDto);
 
@@ -39,7 +38,7 @@ public class AccountController {
     public ResponseEntity<List<AccountResponseDto>> getAccountsByUser(
             @PathVariable Long userId) {
 
-        log.info("Fetching accounts for user: {}", userId);
+        System.out.println("Fetching accounts for user: " + userId);
 
         List<AccountResponseDto> accounts = accountService.getAccountsByUserId(userId);
 
@@ -50,7 +49,7 @@ public class AccountController {
     public ResponseEntity<AccountResponseDto> getAccountByNumber(
             @PathVariable String accountNumber) {
 
-        log.info("Fetching account details for: {}", accountNumber);
+        System.out.println("Fetching account details for: " + accountNumber);
 
         AccountResponseDto account = accountService.getAccountByNumber(accountNumber);
 
@@ -62,8 +61,7 @@ public class AccountController {
             @PathVariable String accountNumber,
             @Valid @RequestBody BalanceUpdateDto updateDto) {
 
-        log.info("Deposit request: {} to account: {}",
-                updateDto.getAmount(), accountNumber);
+        System.out.println("Deposit request: " + updateDto.getAmount() + " to account: " + accountNumber);
 
         AccountResponseDto account = accountService.depositMoney(accountNumber, updateDto);
 
@@ -75,8 +73,7 @@ public class AccountController {
             @PathVariable String accountNumber,
             @Valid @RequestBody BalanceUpdateDto updateDto) {
 
-        log.info("Withdrawal request: {} from account: {}",
-                updateDto.getAmount(), accountNumber);
+        System.out.println("Withdrawal request: " + updateDto.getAmount() + " from account: " + accountNumber);
 
         AccountResponseDto account = accountService.withdrawMoney(accountNumber, updateDto);
 

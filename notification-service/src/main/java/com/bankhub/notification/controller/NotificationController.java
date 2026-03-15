@@ -1,10 +1,6 @@
-package com.bankhub.notification.controller;
-
 import com.bankhub.notification.dto.NotificationRequestDto;
 import com.bankhub.notification.entity.NotificationEvent;
 import com.bankhub.notification.service.NotificationService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,19 +10,20 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/notifications")
-@RequiredArgsConstructor
-@Slf4j
 @CrossOrigin(origins = "*")
 public class NotificationController {
 
     private final NotificationService notificationService;
 
+    public NotificationController(NotificationService notificationService) {
+        this.notificationService = notificationService;
+    }
+
     @PostMapping("/send")
     public ResponseEntity<String> sendNotification(
             @RequestBody NotificationRequestDto request) {
 
-        log.info("Manual notification request: {} for user: {}",
-                request.getNotificationType(), request.getUserId());
+        System.out.println("Manual notification request: " + request.getNotificationType() + " for user: " + request.getUserId());
 
         try {
             notificationService.sendNotification(request);
@@ -40,7 +37,7 @@ public class NotificationController {
     public ResponseEntity<List<NotificationEvent>> getUserNotifications(
             @PathVariable Long userId) {
 
-        log.info("Fetching notifications for user: {}", userId);
+        System.out.println("Fetching notifications for user: " + userId);
 
         List<NotificationEvent> notifications = notificationService.getUserNotifications(userId);
 
@@ -50,7 +47,7 @@ public class NotificationController {
     @GetMapping("/failed")
     public ResponseEntity<List<NotificationEvent>> getFailedNotifications() {
 
-        log.info("Fetching failed notifications");
+        System.out.println("Fetching failed notifications");
 
         List<NotificationEvent> failedNotifications = notificationService.getFailedNotifications();
 
@@ -60,7 +57,7 @@ public class NotificationController {
     @PostMapping("/retry-failed")
     public ResponseEntity<String> retryFailedNotifications() {
 
-        log.info("Retrying failed notifications");
+        System.out.println("Retrying failed notifications");
 
         try {
             notificationService.retryFailedNotifications();
@@ -73,7 +70,7 @@ public class NotificationController {
     @GetMapping("/stats")
     public ResponseEntity<Map<String, Object>> getNotificationStats() {
 
-        log.info("Fetching notification statistics");
+        System.out.println("Fetching notification statistics");
 
         LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
         long sentCount = notificationService.getSentNotificationsCount(oneDayAgo);

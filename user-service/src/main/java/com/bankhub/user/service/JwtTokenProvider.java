@@ -3,7 +3,6 @@ package com.bankhub.user.service;
 import com.bankhub.user.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +10,6 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 
 @Component
-@Slf4j
 public class JwtTokenProvider {
 
     private final SecretKey secretKey;
@@ -73,7 +71,7 @@ public class JwtTokenProvider {
                     .parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
-            log.error("Invalid JWT token: {}", e.getMessage());
+            System.err.println("Invalid JWT token: " + e.getMessage());
             return false;
         }
     }

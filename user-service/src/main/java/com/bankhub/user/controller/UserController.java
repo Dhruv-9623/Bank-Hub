@@ -3,8 +3,6 @@ package com.bankhub.user.controller;
 import com.bankhub.user.dto.*;
 import com.bankhub.user.service.UserService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,19 +13,21 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/users")
 @Validated
-@RequiredArgsConstructor
-@Slf4j
 @CrossOrigin(origins = "*")
 public class UserController {
 
     private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<UserResponseDto> register(
             @Valid @RequestBody UserRegistrationDto registrationDto) {
 
-        log.info("User registration attempt for email: {}", registrationDto.getEmail());
+        System.out.println("User registration attempt for email: " + registrationDto.getEmail());
 
         UserResponseDto user = userService.registerUser(registrationDto);
 
@@ -38,7 +38,7 @@ public class UserController {
     public ResponseEntity<AuthenticationResponseDto> login(
             @Valid @RequestBody LoginRequestDto loginRequest) {
 
-        log.info("Login attempt for username: {}", loginRequest.getUsername());
+        System.out.println("Login attempt for username: " + loginRequest.getUsername());
 
         AuthenticationResponseDto response = userService.authenticateUser(loginRequest);
 

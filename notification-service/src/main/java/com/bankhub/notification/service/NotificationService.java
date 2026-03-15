@@ -5,8 +5,6 @@ import com.bankhub.notification.entity.NotificationChannel;
 import com.bankhub.notification.entity.NotificationEvent;
 import com.bankhub.notification.entity.NotificationStatus;
 import com.bankhub.notification.repository.NotificationRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -18,19 +16,21 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
-@Slf4j
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final JavaMailSender mailSender;
 
+    public NotificationService(NotificationRepository notificationRepository, JavaMailSender mailSender) {
+        this.notificationRepository = notificationRepository;
+        this.mailSender = mailSender;
+    }
+
     public void sendNotification(NotificationRequestDto request) {
         String eventId = UUID.randomUUID().toString();
 
-        log.info("Processing notification request: {} for user: {}",
-                request.getNotificationType(), request.getUserId());
+        System.out.println("Processing notification request: " + request.getNotificationType() + " for user: " + request.getUserId());
 
         // Create notification event record
         NotificationEvent event = NotificationEvent.builder()
@@ -73,7 +73,7 @@ public class NotificationService {
             savedEvent.setSentAt(LocalDateTime.now());
             notificationRepository.save(savedEvent);
 
-            log.info("Notification sent successfully: {} via {}", eventId, request.getChannel());
+            System.out.println("Notification sent successfully: " + eventId + " via " + request.getChannel());
 
         } catch (Exception e) {
             // Update status to failed
@@ -81,7 +81,7 @@ public class NotificationService {
             savedEvent.setErrorMessage(e.getMessage());
             notificationRepository.save(savedEvent);
 
-            log.error("Failed to send notification: {} - Error: {}", eventId, e.getMessage());
+            System.err.println("Failed to send notification: " + eventId + " - Error: " + e.getMessage());
             throw new RuntimeException("Notification sending failed", e);
         }
     }
@@ -89,27 +89,26 @@ public class NotificationService {
     private void sendEmailNotification(NotificationEvent event) {
         try {
             // ✅ SIMULATE EMAIL FOR DEMO - Beautiful console display
-            log.info("📧 =============== EMAIL NOTIFICATION SENT ===============");
-            log.info("📧 TO: {}", event.getRecipientEmail());
-            log.info("📧 SUBJECT: {}", event.getSubject());
-            log.info("📧 MESSAGE:");
-            log.info("📧 {}", event.getMessage());
-            log.info("📧 ====================================================");
-            log.info("✅ Email notification sent successfully (simulated)!");
+            System.out.println("📧 =============== EMAIL NOTIFICATION SENT ===============");
+            System.out.println("📧 TO: " + event.getRecipientEmail());
+            System.out.println("📧 SUBJECT: " + event.getSubject());
+            System.out.println("📧 MESSAGE:");
+            System.out.println("📧 " + event.getMessage());
+            System.out.println("📧 ====================================================");
+            System.out.println("✅ Email notification sent successfully (simulated)!");
 
             // Simulate email processing time
             Thread.sleep(50);
 
         } catch (Exception e) {
-            log.error("Failed to send email to: {} - Error: {}", event.getRecipientEmail(), e.getMessage());
+            System.err.println("Failed to send email to: " + event.getRecipientEmail() + " - Error: " + e.getMessage());
             throw new RuntimeException("Email simulation failed", e);
         }
     }
 
     private void sendSmsNotification(NotificationEvent event) {
         // In a real application, integrate with SMS provider like Twilio
-        log.info("SMS notification simulated for: {} - Message: {}",
-                event.getRecipientPhone(), event.getMessage());
+        System.out.println("SMS notification simulated for: " + event.getRecipientPhone() + " - Message: " + event.getMessage());
 
         // Simulate SMS sending delay
         try {
@@ -121,14 +120,12 @@ public class NotificationService {
 
     private void sendPushNotification(NotificationEvent event) {
         // In a real application, integrate with push notification service
-        log.info("Push notification simulated for user: {} - Message: {}",
-                event.getUserId(), event.getMessage());
+        System.out.println("Push notification simulated for user: " + event.getUserId() + " - Message: " + event.getMessage());
     }
 
     private void sendInAppNotification(NotificationEvent event) {
         // In a real application, store in database for in-app display
-        log.info("In-app notification created for user: {} - Message: {}",
-                event.getUserId(), event.getMessage());
+        System.out.println("In-app notification created for user: " + event.getUserId() + " - Message: " + event.getMessage());
     }
 
     public List<NotificationEvent> getUserNotifications(Long userId) {
@@ -171,7 +168,7 @@ public class NotificationService {
                 notificationRepository.save(event);
 
             } catch (Exception e) {
-                log.error("Retry failed for notification: {} - Error: {}", event.getEventId(), e.getMessage());
+                System.err.println("Retry failed for notification: " + event.getEventId() + " - Error: " + e.getMessage());
             }
         }
     }

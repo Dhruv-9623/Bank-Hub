@@ -4,8 +4,6 @@ import com.bankhub.user.dto.*;
 import com.bankhub.user.entity.User;
 import com.bankhub.user.entity.UserRole;
 import com.bankhub.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,14 +11,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
-@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+
+    // ...existing code...
 
     public UserResponseDto registerUser(UserRegistrationDto registrationDto) {
         // Check if user already exists
@@ -41,7 +45,7 @@ public class UserService {
 
         User savedUser = userRepository.save(user);
 
-        log.info("User registered successfully: {}", savedUser.getUsername());
+        System.out.println("User registered successfully: " + savedUser.getUsername());
 
         return mapToUserResponseDto(savedUser);
     }
@@ -67,7 +71,7 @@ public class UserService {
         String accessToken = jwtTokenProvider.generateAccessToken(user);
         String refreshToken = jwtTokenProvider.generateRefreshToken(user);
 
-        log.info("User authenticated successfully: {}", user.getUsername());
+        System.out.println("User authenticated successfully: " + user.getUsername());
 
         return AuthenticationResponseDto.builder()
                 .accessToken(accessToken)
@@ -98,7 +102,7 @@ public class UserService {
     }
 
     public void logoutUser(String username) {
-        log.info("User logged out: {}", username);
+        System.out.println("User logged out: " + username);
         // In a real application, you might invalidate tokens here
     }
 

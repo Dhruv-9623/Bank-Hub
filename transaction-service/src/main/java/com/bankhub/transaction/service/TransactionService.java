@@ -5,8 +5,6 @@ import com.bankhub.transaction.entity.Transaction;
 import com.bankhub.transaction.entity.TransactionStatus;
 import com.bankhub.transaction.entity.TransactionType;
 import com.bankhub.transaction.repository.TransactionRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,9 +16,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
-@Slf4j
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
@@ -28,13 +24,17 @@ public class TransactionService {
     private final TransactionEventPublisher eventPublisher;
     private final Random random = new Random();
 
+    public TransactionService(TransactionRepository transactionRepository, AccountServiceClient accountServiceClient, TransactionEventPublisher eventPublisher) {
+        this.transactionRepository = transactionRepository;
+        this.accountServiceClient = accountServiceClient;
+        this.eventPublisher = eventPublisher;
+    }
+
     public TransactionResponseDto transferMoney(TransferRequestDto transferRequest) {
         String transactionId = generateTransactionId();
         String referenceNumber = generateReferenceNumber();
 
-        log.info("Starting money transfer: {} from {} to {} amount: {}",
-                transactionId, transferRequest.getFromAccount(),
-                transferRequest.getToAccount(), transferRequest.getAmount());
+        System.out.println("Starting money transfer: " + transactionId + " from " + transferRequest.getFromAccount() + " to " + transferRequest.getToAccount() + " amount: " + transferRequest.getAmount());
 
         // Create pending transaction
         Transaction transaction = Transaction.builder()
@@ -87,10 +87,10 @@ public class TransactionService {
             savedTransaction.setProcessedAt(LocalDateTime.now());
             Transaction completedTransaction = transactionRepository.save(savedTransaction);
 
-            log.info("Money transfer completed successfully: {}", transactionId);
+            System.out.println("Money transfer completed successfully: " + transactionId);
 
             eventPublisher.publishTransactionEvent(completedTransaction);
-            log.info(" Transaction event published to Kafka for notifications");
+            System.out.println("Transaction event published to Kafka for notifications");
 
             return mapToTransactionResponseDto(completedTransaction);
 
@@ -100,7 +100,7 @@ public class TransactionService {
             savedTransaction.setProcessedAt(LocalDateTime.now());
             transactionRepository.save(savedTransaction);
 
-            log.error("Money transfer failed: {} - Error: {}", transactionId, e.getMessage());
+            System.err.println("Money transfer failed: " + transactionId + " - Error: " + e.getMessage());
             throw new RuntimeException("Transfer failed: " + e.getMessage());
         }
     }

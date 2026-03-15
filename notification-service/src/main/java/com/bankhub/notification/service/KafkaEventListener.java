@@ -6,23 +6,24 @@ import com.bankhub.notification.dto.TransactionEventDto;
 import com.bankhub.notification.entity.NotificationChannel;
 import com.bankhub.notification.entity.NotificationType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
-@Slf4j
 public class KafkaEventListener {
 
     private final NotificationService notificationService;
     private final ObjectMapper objectMapper;
 
+    public KafkaEventListener(NotificationService notificationService, ObjectMapper objectMapper) {
+        this.notificationService = notificationService;
+        this.objectMapper = objectMapper;
+    }
+
     @KafkaListener(topics = "transaction-events", groupId = "notification-service")
     public void handleTransactionEvent(String message) {
         try {
-            log.info("Received transaction event: {}", message);
+            System.out.println("Received transaction event: " + message);
 
             TransactionEventDto transactionEvent = objectMapper.readValue(message, TransactionEventDto.class);
 
@@ -41,14 +42,15 @@ public class KafkaEventListener {
             notificationService.sendNotification(notification);
 
         } catch (Exception e) {
-            log.error("Error processing transaction event: {}", e.getMessage(), e);
+            System.err.println("Error processing transaction event: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     @KafkaListener(topics = "fraud-events", groupId = "notification-service")
     public void handleFraudEvent(String message) {
         try {
-            log.info("Received fraud event: {}", message);
+            System.out.println("Received fraud event: " + message);
 
             FraudEventDto fraudEvent = objectMapper.readValue(message, FraudEventDto.class);
 
@@ -84,20 +86,22 @@ public class KafkaEventListener {
             }
 
         } catch (Exception e) {
-            log.error("Error processing fraud event: {}", e.getMessage(), e);
+            System.err.println("Error processing fraud event: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     @KafkaListener(topics = "account-events", groupId = "notification-service")
     public void handleAccountEvent(String message) {
         try {
-            log.info("Received account event: {}", message);
+            System.out.println("Received account event: " + message);
 
             // Handle account creation, balance updates, etc.
             // Implementation similar to above
 
         } catch (Exception e) {
-            log.error("Error processing account event: {}", e.getMessage(), e);
+            System.err.println("Error processing account event: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

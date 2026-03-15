@@ -4,8 +4,6 @@ import com.bankhub.account.dto.*;
 import com.bankhub.account.entity.Account;
 import com.bankhub.account.entity.AccountType;
 import com.bankhub.account.repository.AccountRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,13 +14,15 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
-@Slf4j
 public class AccountService {
 
     private final AccountRepository accountRepository;
     private final Random random = new Random();
+
+    public AccountService(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+    }
 
     public AccountResponseDto createAccount(AccountCreateDto createDto) {
         // Generate unique account number
@@ -40,8 +40,7 @@ public class AccountService {
 
         Account savedAccount = accountRepository.save(account);
 
-        log.info("Account created successfully: {} for user: {}",
-                savedAccount.getAccountNumber(), savedAccount.getUserId());
+        System.out.println("Account created successfully: " + savedAccount.getAccountNumber() + " for user: " + savedAccount.getUserId());
 
         return mapToAccountResponseDto(savedAccount);
     }
@@ -74,8 +73,7 @@ public class AccountService {
 
         Account savedAccount = accountRepository.save(account);
 
-        log.info("Deposit successful: {} to account: {}, new balance: {}",
-                updateDto.getAmount(), accountNumber, newBalance);
+        System.out.println("Deposit successful: " + updateDto.getAmount() + " to account: " + accountNumber + ", new balance: " + newBalance);
 
         return mapToAccountResponseDto(savedAccount);
     }
@@ -98,8 +96,7 @@ public class AccountService {
 
         Account savedAccount = accountRepository.save(account);
 
-        log.info("Withdrawal successful: {} from account: {}, new balance: {}",
-                updateDto.getAmount(), accountNumber, newBalance);
+        System.out.println("Withdrawal successful: " + updateDto.getAmount() + " from account: " + accountNumber + ", new balance: " + newBalance);
 
         return mapToAccountResponseDto(savedAccount);
     }

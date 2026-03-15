@@ -5,8 +5,6 @@ import com.bankhub.fraud.entity.FraudCheck;
 import com.bankhub.fraud.entity.FraudDecision;
 import com.bankhub.fraud.entity.RiskLevel;
 import com.bankhub.fraud.repository.FraudCheckRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,9 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
-@Slf4j
 public class FraudDetectionService {
 
     private final FraudCheckRepository fraudCheckRepository;
@@ -42,10 +38,14 @@ public class FraudDetectionService {
     @Value("${fraud.detection.risk-score-threshold:75.0}")
     private double riskScoreThreshold;
 
+    public FraudDetectionService(FraudCheckRepository fraudCheckRepository) {
+        this.fraudCheckRepository = fraudCheckRepository;
+    }
+
     public FraudCheckResponseDto analyzeTransaction(TransactionEventDto transaction) {
         long startTime = System.currentTimeMillis();
 
-        log.info("Starting fraud analysis for transaction: {}", transaction.getTransactionId());
+        System.out.println("Starting fraud analysis for transaction: " + transaction.getTransactionId());
 
         // AI Risk Analysis
         RiskAnalysisDto riskAnalysis = performRiskAnalysis(transaction);
@@ -65,8 +65,7 @@ public class FraudDetectionService {
 
         FraudCheck savedCheck = fraudCheckRepository.save(fraudCheck);
 
-        log.info("Fraud analysis completed for transaction: {} - Risk Score: {} - Decision: {}",
-                transaction.getTransactionId(), riskAnalysis.getRiskScore(), fraudCheck.getDecision());
+        System.out.println("Fraud analysis completed for transaction: " + transaction.getTransactionId() + " - Risk Score: " + riskAnalysis.getRiskScore() + " - Decision: " + fraudCheck.getDecision());
 
         return mapToFraudCheckResponseDto(savedCheck, riskAnalysis);
     }

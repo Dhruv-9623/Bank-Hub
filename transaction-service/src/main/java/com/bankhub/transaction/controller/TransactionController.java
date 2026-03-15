@@ -4,8 +4,6 @@ import com.bankhub.transaction.dto.TransactionResponseDto;
 import com.bankhub.transaction.dto.TransferRequestDto;
 import com.bankhub.transaction.service.TransactionService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -16,22 +14,21 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/transactions")
 @Validated
-@RequiredArgsConstructor
-@Slf4j
 @CrossOrigin(origins = "*")
 public class TransactionController {
 
     private final TransactionService transactionService;
+
+    public TransactionController(TransactionService transactionService) {
+        this.transactionService = transactionService;
+    }
 
     @PostMapping("/transfer")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<TransactionResponseDto> transferMoney(
             @Valid @RequestBody TransferRequestDto transferRequest) {
 
-        log.info("Money transfer request: {} to {} amount: {}",
-                transferRequest.getFromAccount(),
-                transferRequest.getToAccount(),
-                transferRequest.getAmount());
+        System.out.println("Money transfer request: " + transferRequest.getFromAccount() + " to " + transferRequest.getToAccount() + " amount: " + transferRequest.getAmount());
 
         TransactionResponseDto transaction = transactionService.transferMoney(transferRequest);
 
@@ -42,7 +39,7 @@ public class TransactionController {
     public ResponseEntity<List<TransactionResponseDto>> getUserTransactions(
             @PathVariable Long userId) {
 
-        log.info("Fetching transaction history for user: {}", userId);
+        System.out.println("Fetching transaction history for user: " + userId);
 
         List<TransactionResponseDto> transactions = transactionService.getTransactionHistory(userId);
 
@@ -53,7 +50,7 @@ public class TransactionController {
     public ResponseEntity<List<TransactionResponseDto>> getAccountTransactions(
             @PathVariable String accountNumber) {
 
-        log.info("Fetching transactions for account: {}", accountNumber);
+        System.out.println("Fetching transactions for account: " + accountNumber);
 
         List<TransactionResponseDto> transactions = transactionService.getAccountTransactions(accountNumber);
 
@@ -64,7 +61,7 @@ public class TransactionController {
     public ResponseEntity<TransactionResponseDto> getTransactionById(
             @PathVariable String transactionId) {
 
-        log.info("Fetching transaction details: {}", transactionId);
+        System.out.println("Fetching transaction details: " + transactionId);
 
         TransactionResponseDto transaction = transactionService.getTransactionById(transactionId);
 
