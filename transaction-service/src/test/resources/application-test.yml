@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      auto-offset-reset: earliest
+      group-id: test-group
+      enable-auto-commit: false
+    producer:
+      retries: 0
+
+eureka:
+  client:
+    enabled: false
+
+# Disable Feign clients for unit tests
+feign:
+  client:
+    config:
+      default:
+        enabled: false
+
+logging:
+  level:
+    com.bankhub.transaction: DEBUG
