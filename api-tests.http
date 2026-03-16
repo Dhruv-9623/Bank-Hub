@@ -212,7 +212,7 @@ GET http://localhost:8080/api/notifications/stats
 GET http://localhost:8080/api/notifications/user/1
 
 ### 🎯 THE ULTIMATE TEST - Transaction with Auto-Notification!
-POST http://localhost:8082/api/transactions/transfer
+POST http://localhost:8080/api/transactions/transfer
 Content-Type: application/json
 
 {
