@@ -1,5 +1,6 @@
 package com.bankhub.transaction.service;
 
+import com.bankhub.transaction.dto.AccountDto;
 import com.bankhub.transaction.dto.TransferRequestDto;
 import com.bankhub.transaction.entity.Transaction;
 import com.bankhub.transaction.entity.TransactionStatus;
@@ -61,7 +62,14 @@ class TransactionServiceTest {
 
     @Test
     void transferMoney_Success() {
-        when(accountServiceClient.updateBalance(any(), any())).thenReturn(true);
+        AccountDto mockAccount = new AccountDto();
+        mockAccount.setAccountNumber("ACC001");
+        mockAccount.setBalance(new BigDecimal("100.00"));
+        mockAccount.setIsActive(true);
+
+        when(accountServiceClient.getAccountByNumber(any())).thenReturn(mockAccount);
+        when(accountServiceClient.withdrawMoney(any(), any())).thenReturn(mockAccount);
+        when(accountServiceClient.depositMoney(any(), any())).thenReturn(mockAccount);
         when(transactionRepository.save(any(Transaction.class))).thenReturn(testTransaction);
         doNothing().when(eventPublisher).publishTransactionEvent(any());
 

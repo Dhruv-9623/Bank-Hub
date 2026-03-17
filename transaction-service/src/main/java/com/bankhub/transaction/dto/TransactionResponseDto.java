@@ -86,6 +86,7 @@ public class TransactionResponseDto {
         public TransactionResponseBuilder toAccount(String toAccount) { this.toAccount = toAccount; return this; }
         public TransactionResponseBuilder amount(BigDecimal amount) { this.amount = amount; return this; }
         public TransactionResponseBuilder transactionType(TransactionType transactionType) { this.transactionType = transactionType; return this; }
+        public TransactionResponseBuilder type(TransactionType transactionType) { this.transactionType = transactionType; return this; }
         public TransactionResponseBuilder status(TransactionStatus status) { this.status = status; return this; }
         public TransactionResponseBuilder description(String description) { this.description = description; return this; }
         public TransactionResponseBuilder userId(Long userId) { this.userId = userId; return this; }

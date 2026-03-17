@@ -1,3 +1,5 @@
+package com.bankhub.notification.controller;
+
 import com.bankhub.notification.dto.NotificationRequestDto;
 import com.bankhub.notification.entity.NotificationEvent;
 import com.bankhub.notification.service.NotificationService;

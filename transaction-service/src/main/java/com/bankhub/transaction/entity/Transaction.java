@@ -122,6 +122,7 @@ public class Transaction {
         public TransactionBuilder toAccount(String toAccount) { this.toAccount = toAccount; return this; }
         public TransactionBuilder amount(BigDecimal amount) { this.amount = amount; return this; }
         public TransactionBuilder transactionType(TransactionType transactionType) { this.transactionType = transactionType; return this; }
+        public TransactionBuilder type(TransactionType transactionType) { this.transactionType = transactionType; return this; }
         public TransactionBuilder status(TransactionStatus status) { this.status = status; return this; }
         public TransactionBuilder description(String description) { this.description = description; return this; }
         public TransactionBuilder userId(Long userId) { this.userId = userId; return this; }

@@ -25,6 +25,10 @@ public interface FraudCheckRepository extends JpaRepository<FraudCheck, Long> {
 
     List<FraudCheck> findByDecision(FraudDecision decision);
 
+    long countByDecision(FraudDecision decision);
+
+    long countByRiskLevel(RiskLevel riskLevel);
+
     @Query("SELECT COUNT(f) FROM FraudCheck f WHERE f.userId = ?1 AND f.createdAt >= ?2")
     long countTransactionsByUserSince(Long userId, LocalDateTime since);
 

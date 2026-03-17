@@ -1,5 +1,6 @@
 package com.bankhub.notification.repository;
 
+import com.bankhub.notification.entity.NotificationChannel;
 import com.bankhub.notification.entity.NotificationEvent;
 import com.bankhub.notification.entity.NotificationStatus;
 import com.bankhub.notification.entity.NotificationType;
@@ -18,6 +19,10 @@ public interface NotificationRepository extends JpaRepository<NotificationEvent,
     List<NotificationEvent> findByStatus(NotificationStatus status);
 
     List<NotificationEvent> findByNotificationType(NotificationType notificationType);
+
+    long countByStatus(NotificationStatus status);
+
+    long countByChannel(NotificationChannel channel);
 
     @Query("SELECT n FROM NotificationEvent n WHERE n.userId = ?1 ORDER BY n.createdAt DESC")
     List<NotificationEvent> findByUserIdOrderByCreatedAtDesc(Long userId);
