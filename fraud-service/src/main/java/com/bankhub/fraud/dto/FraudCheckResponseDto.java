@@ -93,6 +93,7 @@ public class FraudCheckResponseDto {
         public FraudCheckResponseBuilder amount(BigDecimal amount) { this.amount = amount; return this; }
         public FraudCheckResponseBuilder riskLevel(RiskLevel riskLevel) { this.riskLevel = riskLevel; return this; }
         public FraudCheckResponseBuilder riskScore(BigDecimal riskScore) { this.riskScore = riskScore; return this; }
+        public FraudCheckResponseBuilder riskScore(double riskScore) { this.riskScore = BigDecimal.valueOf(riskScore); return this; }
         public FraudCheckResponseBuilder decision(FraudDecision decision) { this.decision = decision; return this; }
         public FraudCheckResponseBuilder fraudReasons(List<String> fraudReasons) { this.fraudReasons = fraudReasons; return this; }
         public FraudCheckResponseBuilder processingTimeMs(Long processingTimeMs) { this.processingTimeMs = processingTimeMs; return this; }

@@ -18,6 +18,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     List<Transaction> findByFromAccountOrToAccount(String fromAccount, String toAccount);
 
+    List<Transaction> findByFromAccountOrToAccountOrderByCreatedAtDesc(String fromAccount, String toAccount);
+
     Optional<Transaction> findByTransactionId(String transactionId);
 
     List<Transaction> findByStatus(TransactionStatus status);

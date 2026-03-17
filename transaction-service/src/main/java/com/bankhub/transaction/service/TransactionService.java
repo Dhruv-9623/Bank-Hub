@@ -126,6 +126,14 @@ public class TransactionService {
         return mapToTransactionResponseDto(transaction);
     }
 
+    public List<TransactionResponseDto> getTransactionsByUserId(Long userId) {
+        return getTransactionHistory(userId);
+    }
+
+    public List<TransactionResponseDto> getTransactionsByAccountNumber(String accountNumber) {
+        return getAccountTransactions(accountNumber);
+    }
+
     private String generateTransactionId() {
         String transactionId;
         do {

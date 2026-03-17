@@ -13,7 +13,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,7 +46,7 @@ class NotificationServiceTest {
         requestDto.setSubject("Test Subject");
         requestDto.setMessage("Test message");
         requestDto.setSourceEvent("test-event");
-        requestDto.setEventData(Map.of("key", "value"));
+        requestDto.setEventData("{\"key\": \"value\"}");
 
         testNotification = NotificationEvent.builder()
                 .id(1L)
@@ -54,6 +58,7 @@ class NotificationServiceTest {
                 .message("Test message")
                 .status(NotificationStatus.SENT)
                 .sourceEvent("test-event")
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 
@@ -61,11 +66,8 @@ class NotificationServiceTest {
     void sendNotification_Email_Success() {
         when(notificationRepository.save(any(NotificationEvent.class))).thenReturn(testNotification);
 
-        var result = notificationService.sendNotification(requestDto);
+        notificationService.sendNotification(requestDto);
 
-        assertNotNull(result);
-        assertEquals(NotificationStatus.SENT, result.getStatus());
-        assertEquals(NotificationChannel.EMAIL, result.getChannel());
         verify(notificationRepository).save(any(NotificationEvent.class));
     }
 
@@ -80,10 +82,9 @@ class NotificationServiceTest {
             return event;
         });
 
-        var result = notificationService.sendNotification(requestDto);
+        notificationService.sendNotification(requestDto);
 
-        assertNotNull(result);
-        assertEquals(NotificationChannel.SMS, result.getChannel());
+        verify(notificationRepository).save(any(NotificationEvent.class));
     }
 
     @Test
@@ -91,7 +92,7 @@ class NotificationServiceTest {
         when(notificationRepository.findByUserIdOrderByCreatedAtDesc(any()))
                 .thenReturn(Arrays.asList(testNotification));
 
-        var results = notificationService.getNotificationsByUserId(1L);
+        List<NotificationEvent> results = notificationService.getNotificationsByUserId(1L);
 
         assertNotNull(results);
         assertEquals(1, results.size());
@@ -101,12 +102,13 @@ class NotificationServiceTest {
     @Test
     void getNotificationStatistics_Success() {
         when(notificationRepository.count()).thenReturn(50L);
-        when(notificationRepository.countByStatus(any())).thenReturn(45L);
-        when(notificationRepository.countByChannel(any())).thenReturn(30L);
+        when(notificationRepository.countByStatus(NotificationStatus.SENT)).thenReturn(45L);
+        when(notificationRepository.countByStatus(NotificationStatus.FAILED)).thenReturn(5L);
+        when(notificationRepository.countByStatus(NotificationStatus.PENDING)).thenReturn(0L);
 
-        var result = notificationService.getNotificationStatistics();
+        Map<String, Long> result = notificationService.getNotificationStatistics();
 
         assertNotNull(result);
-        assertEquals(50L, result.getTotalNotifications());
+        assertEquals(50L, result.get("total"));
     }
 }

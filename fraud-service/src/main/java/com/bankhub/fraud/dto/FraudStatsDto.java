@@ -41,6 +41,7 @@ public class FraudStatsDto {
     public void setFalsePositiveRate(Double falsePositiveRate) { this.falsePositiveRate = falsePositiveRate; }
     public Long getAverageProcessingTimeMs() { return averageProcessingTimeMs; }
     public void setAverageProcessingTimeMs(Long averageProcessingTimeMs) { this.averageProcessingTimeMs = averageProcessingTimeMs; }
+    public Long getTotalTransactionsAnalyzed() { return totalChecks; }
 
     public static class FraudStatsDtoBuilder {
         private Long totalChecks;
@@ -62,6 +63,9 @@ public class FraudStatsDto {
         public FraudStatsDtoBuilder fraudDetectionRate(Double fraudDetectionRate) { this.fraudDetectionRate = fraudDetectionRate; return this; }
         public FraudStatsDtoBuilder falsePositiveRate(Double falsePositiveRate) { this.falsePositiveRate = falsePositiveRate; return this; }
         public FraudStatsDtoBuilder averageProcessingTimeMs(Long averageProcessingTimeMs) { this.averageProcessingTimeMs = averageProcessingTimeMs; return this; }
+        public FraudStatsDtoBuilder totalTransactionsAnalyzed(Long totalTransactionsAnalyzed) { this.totalChecks = totalTransactionsAnalyzed; return this; }
+        public FraudStatsDtoBuilder blockedTransactions(Long blockedTransactions) { this.blockedAccounts = blockedTransactions; return this; }
+        public FraudStatsDtoBuilder highRiskTransactions(Long highRiskTransactions) { this.flaggedTransactions = highRiskTransactions; return this; }
 
         public FraudStatsDto build() {
             return new FraudStatsDto(totalChecks, approvedTransactions, rejectedTransactions, flaggedTransactions, blockedAccounts, fraudDetectionRate, falsePositiveRate, averageProcessingTimeMs);

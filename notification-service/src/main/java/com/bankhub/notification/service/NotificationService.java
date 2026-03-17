@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -142,6 +144,19 @@ public class NotificationService {
 
     public long getFailedNotificationsCount(LocalDateTime since) {
         return notificationRepository.countFailedNotificationsSince(since);
+    }
+
+    public List<NotificationEvent> getNotificationsByUserId(Long userId) {
+        return getUserNotifications(userId);
+    }
+
+    public Map<String, Long> getNotificationStatistics() {
+        Map<String, Long> stats = new HashMap<>();
+        stats.put("total", notificationRepository.count());
+        stats.put("sent", notificationRepository.countByStatus(NotificationStatus.SENT));
+        stats.put("failed", notificationRepository.countByStatus(NotificationStatus.FAILED));
+        stats.put("pending", notificationRepository.countByStatus(NotificationStatus.PENDING));
+        return stats;
     }
 
     public void retryFailedNotifications() {

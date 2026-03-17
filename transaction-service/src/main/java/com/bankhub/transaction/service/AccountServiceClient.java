@@ -18,4 +18,8 @@ public interface AccountServiceClient {
     @PostMapping("/api/accounts/{accountNumber}/deposit")
     AccountDto depositMoney(@PathVariable("accountNumber") String accountNumber,
                             @RequestBody BalanceUpdateDto updateDto);
+
+    @PostMapping("/api/accounts/{accountNumber}/update-balance")
+    AccountDto updateBalance(@PathVariable("accountNumber") String accountNumber,
+                             @RequestBody BalanceUpdateDto updateDto);
 }

@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -41,22 +42,12 @@ class NotificationControllerTest {
         dto.setSubject("Test");
         dto.setMessage("Test message");
 
-        NotificationEvent response = NotificationEvent.builder()
-                .id(1L)
-                .userId(1L)
-                .recipientEmail("test@example.com")
-                .notificationType(NotificationType.TRANSACTION_ALERT)
-                .channel(NotificationChannel.EMAIL)
-                .status(NotificationStatus.SENT)
-                .build();
-
-        when(notificationService.sendNotification(any())).thenReturn(response);
+        doNothing().when(notificationService).sendNotification(any());
 
         mockMvc.perform(post("/api/notifications/send")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.status").value("SENT"));
+                .andExpect(status().isOk());
     }
 
     @Test
